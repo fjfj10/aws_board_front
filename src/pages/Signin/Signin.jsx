@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { instance } from '../../api/config/instance';
 
 function Signin(props) {
     const navigate = useNavigate();
@@ -21,11 +22,22 @@ function Signin(props) {
         navigate("/auth/signup");
     }
 
+    const handleSigninSubmit = async() => {
+        try {
+            await instance.post("/auth/signin", signinUser);
+        } catch (error) {
+            if (error.response.status === 401) {
+                alert(error.response.data.authError);
+            }
+        }
+        
+    }
+
     return (
         <div>
             <div><input type="email" name='email' placeholder='' onChange={handleInputChange} /></div>
             <div><input type="password" name='password' placeholder='' onChange={handleInputChange} /></div>
-            <div><button>로그인</button></div>
+            <div><button onClick={handleSigninSubmit}>로그인</button></div>
             <div><button onClick={handleSignupClick}>회원가입</button></div>
         </div>
     );

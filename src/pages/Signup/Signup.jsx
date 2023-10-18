@@ -27,6 +27,7 @@ function Signup(props) {
     const handleSignupSubmit = async() => {
         try {
             const response = await instance.post("/auth/signup", signupUser);
+            alert("가입되었습니다.")
             navigate("/auth/signin");
         } catch (error) {
             console.log(error);
