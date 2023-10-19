@@ -32,6 +32,7 @@ function SideBar(props) {
 
     const handleLogoutClick = () => {
         localStorage.removeItem("accessToken");
+        // navigate: 상태가 유지됌 -> 상태가 바뀌지 않음 token이 없어져도 로그인 상태 유지, window.location.replace -> 전부 재랜더링=> 상태바뀜
         window.location.replace("/");
     }
 
