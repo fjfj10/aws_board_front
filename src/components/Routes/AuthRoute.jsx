@@ -1,9 +1,10 @@
 import React from 'react';
-import { Route, Routes } from 'react-router-dom';
+import { Navigate, Route, Routes } from 'react-router-dom';
 import Signin from '../../pages/Signin/Signin';
 import Signup from '../../pages/Signup/Signup';
+import { useQueryClient } from 'react-query';
 
-function Auth(props) {
+function AuthRoute(props) {
     
 
     return (
@@ -14,4 +15,4 @@ function Auth(props) {
     );
 }
 
-export default Auth;
+export default AuthRoute;
