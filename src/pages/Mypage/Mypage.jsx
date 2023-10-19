@@ -15,6 +15,7 @@ function Mypage(props) {
             }
         }
         try {
+            // post(요청url, 보낼 객체, option) -> 보내는게 없어도 {}로 자리를 채워준다 아님 오류남
             await instance.post("account/mail/auth", {}, option);
             alert("인증메일 전송완료. 인증 요청 메일을 확인해주세요");
         } catch (error) {
