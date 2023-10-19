@@ -6,6 +6,12 @@ import { useQueryClient } from 'react-query';
 
 function AuthRoute(props) {
     
+    const queryClient = useQueryClient();
+    const principalState = queryClient.getQueryState("getPrincipal");
+
+    if(!!principalState?.data?.data) {
+        return <Navigate to={"/"} />
+    }
 
     return (
         <Routes>
