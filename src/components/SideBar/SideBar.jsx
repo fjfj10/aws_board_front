@@ -36,8 +36,6 @@ function SideBar(props) {
         window.location.replace("/");
     }
 
-    console.log(principalState);
-
     return (
         <div css={layout}>
             {!!principalState?.data?.data ? (
