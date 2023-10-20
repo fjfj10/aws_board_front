@@ -49,8 +49,9 @@ function Mypage(props) {
     const [ progressPercent, setProgressPercent ] = useState(0);
 
     useEffect(() => {
-        setProfileImgSrc("");
-    }, []);
+        setProfileImgSrc(principal.profileUrl);
+        console.log(principal.profileUrl);
+    }, [])
 
     const handleProfileUploadClick = () => {
         if (window.confirm("프로필 사진을 변경하시겠습니까?")) {
@@ -97,10 +98,16 @@ function Mypage(props) {
             },
             () => {
                 getDownloadURL(storageRef).then(downloadUrl => {
-                    console.log(downloadUrl);
-                    setProfileImgSrc(downloadUrl);
-                    alert("프로필 사진이 변경되었습니다.");
-                    window.location.reload();
+                    const option = {
+                        headers: {
+                            Authorization: localStorage.getItem("accessToken")
+                        }
+                    }
+                    instance.put("/account/profile/img", {profileUrl: downloadUrl}, option)
+                    .then((response) => {
+                        alert("프로필 사진이 변경되었습니다.");
+                        window.location.reload();
+                    });
                 })
             }
         )
