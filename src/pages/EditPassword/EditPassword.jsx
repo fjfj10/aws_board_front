@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { css } from '@emotion/react';
+/** @jsxImportSource @emotion/react */
 import RootContainer from '../../components/RootContainer/RootContainer';
 import { instance } from '../../api/config/instance';
-/** @jsxImportSource @emotion/react */
 
 function EditPassword(props) {
     const[ passwordObj, setPasswordObj ] = useState({
