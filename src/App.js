@@ -5,6 +5,7 @@ import { useQuery } from "react-query";
 import { instance } from "./api/config/instance";
 import AuthRoute from "./components/Routes/AuthRoute";
 import AccountRoute from "./components/Routes/AccountRoute";
+import BoardWrite from "./pages/BoardWrite/BoardWrite";
 
 function App() {
   // useQuery는 무조건 get요청 ([key값, 디펜던시], 비동기처리, 설정)
@@ -38,6 +39,7 @@ function App() {
         <Route path="/" element={ <Home /> } />
         <Route path="/auth/*" element={ <AuthRoute /> } />
         <Route path="/account/*" element={ <AccountRoute /> } />
+        <Route path="/board/write" element={ <BoardWrite /> } />
         <Route path="/board/:category/" element={ <></> } />
         <Route path="/board/:category/register" element={ <></> } />
         <Route path="/board/:category/edit" element={ <></> } />

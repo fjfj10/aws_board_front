@@ -14,7 +14,7 @@ const mainContainer = css`
     height: 100%;
     border: 1px solid #dbdbdb;
     border-radius: 10px;
-    padding: 20px;
+    padding: 20px 20px 20px;
 `
 
 function RootContainer({ children }) {
