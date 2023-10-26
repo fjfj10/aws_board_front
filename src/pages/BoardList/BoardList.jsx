@@ -42,25 +42,32 @@ const selectBox = css`
 
 const SPageNumbers = css`
     display: flex;
-    justify-content: space-between;
     align-items: center;
     margin-top: 10px;
     width: 200px;
-    list-style-type: none;
-    & a {
-        text-decoration: none;
-        color: black;
-    }
 
-    & li {
+    & button {
         display: flex;
         justify-content: center;
         align-items: center;
+        margin: 0px 3px;
         width: 20px;
         border: 1px solid #dbdbdb;
+        cursor: pointer;
     }
 
 `;
+
+const SBoardTitle = css`
+    max-width: 500px;
+    width: 500px;
+    overflow: hidden;
+    /* ellipsis: text가 길이를 벗어나면 자동으로 생략(...)*/
+    text-overflow: ellipsis;
+    /* ellipsis: text가 길이를 벗어날때 자동 줄바꿈 방지*/
+    white-space: nowrap;
+    
+`
 
 function BoardList(props) {
     const navigate = useNavigate();
@@ -72,10 +79,8 @@ function BoardList(props) {
         {value: "작성자", label: "작성자"}
     ];
 
-    const [ selectedOption, setSelectedOption ] = useState(options[0]);
-
     const search = {
-        optionName: selectedOption.label,
+        optionName: options[0].label,
         searchValue: ""
     }
 
@@ -86,6 +91,17 @@ function BoardList(props) {
             params: searchParams
         }
         return await instance.get(`/boards/${category}/${page}`, option);
+    }, {
+        refetchOnWindowFocus: false
+    });
+
+    const getBoardCount = useQuery(["getBoardList", category], async () => {
+        const option = {
+            params: searchParams
+        }
+        return await instance.get(`/boards/${category}/count`, option);
+    }, {
+        refetchOnWindowFocus: false
     });
 
     const handleSearchInputChange = (e) => {
@@ -105,6 +121,49 @@ function BoardList(props) {
     const handleSearchButtonClick = () => {
         navigate(`/board/${category}/1`);
         getBoardList.refetch();
+        getBoardCount.refetch();
+    }
+
+    // 페이지 버튼 설정
+    const pagenation = () => {
+        if(getBoardCount.isLoading) {
+            return <></>
+        }
+        const totalBoardCount = getBoardCount.data.data
+        const lastPage = totalBoardCount % 10 === 0 
+            ? totalBoardCount / 10
+            // Math.floor(): 절삭 = 나머지 버림
+            : Math.floor(totalBoardCount / 10) + 1
+
+        // page - (page % 5) + 1은 5, 10, 15 같은 나머지가 없을때는 startIndex가 page+1이 되므로 page % 5 === 0인경우 page - 4 해준다
+        const startIndex = parseInt(page) % 5 === 0 ? parseInt(page) - 4 : parseInt(page) - (parseInt(page) % 5) + 1;
+        const endIndex = startIndex + 4 <= lastPage ? startIndex + 4 : lastPage
+
+        const pageNumbers = [];
+
+        for (let i = startIndex; i <= endIndex; i++) {
+            pageNumbers.push(i);
+        }
+        
+
+        return (
+            <>
+                <button disabled={parseInt(page) === 1} onClick={() => {
+                    navigate(`/board/${category}/${parseInt(page) - 1}`);
+                }}>&#60;</button>
+
+                {pageNumbers.map(num => {
+                    return <button key={num} onClick={() => {
+                        navigate(`/board/${category}/${num}`)
+                    }}>{num}</button>
+                })}
+
+                <button disabled={parseInt(page) === lastPage} onClick={() => {
+                    navigate(`/board/${category}/${parseInt(page) + 1}`);
+                }}>&#62;</button>
+            </>
+
+        )
     }
 
     return (
@@ -127,15 +186,15 @@ function BoardList(props) {
                             <th>제목</th>
                             <th>작성자</th>
                             <th>작성일</th>
-                            <th>추천</th>
                             <th>조회수</th>
+                            <th>추천</th>
                         </tr>
                     </thead>
                     <tbody>
                         {!getBoardList.isLoading && getBoardList?.data?.data.map(board => {
-                            return <tr key={board.boardId}>
+                            return <tr key={board.boardId} onClick={() => {navigate(`/board/${board.boardId}`)}}>
                                         <td>{board.boardId}</td>
-                                        <td>{board.title}</td>
+                                        <td css={SBoardTitle}>{board.title}</td>
                                         <td>{board.nickname}</td>
                                         <td>{board.createDate}</td>
                                         <td>{board.hitsCount}</td>
@@ -145,15 +204,9 @@ function BoardList(props) {
                     </tbody>
                 </table>
 
-                <ul css={SPageNumbers}>
-                    <Link to={`/board/${category}/${parseInt(page) - 1}`}><li>&#60;</li></Link>
-                    <Link to={`/board/${category}/${1}`}><li>1</li></Link>
-                    <Link to={`/board/${category}/${2}`}><li>2</li></Link>
-                    <Link to={`/board/${category}/${3}`}><li>3</li></Link>
-                    <Link to={`/board/${category}/${4}`}><li>4</li></Link>
-                    <Link to={`/board/${category}/${5}`}><li>5</li></Link>
-                    <Link to={`/board/${category}/${parseInt(page) + 1}`}><li>&#62;</li></Link>
-                </ul>
+                <div css={SPageNumbers}>
+                    {pagenation()}
+                </div>
             </div>
         </RootContainer>
     );
