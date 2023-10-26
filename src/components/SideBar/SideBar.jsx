@@ -2,6 +2,9 @@ import React from 'react';
 import { css } from '@emotion/react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useQueryClient } from 'react-query';
+import { useState } from 'react';
+import { useEffect } from 'react';
+import { instance } from '../../api/config/instance';
 /** @jsxImportSource @emotion/react */;
 
 const layout = css`
@@ -19,11 +22,26 @@ const container = css`
 `
 
 function SideBar(props) {
+    const [ categories, setCategories ] = useState([]);
+
     const navigate = useNavigate();
 
     const queryClient = useQueryClient();
 
     const principalState = queryClient.getQueryState("getPrincipal");
+
+    useEffect(() => {
+        instance.get("/board/categories")
+        .then((response)=>{
+            setCategories(response.data);
+
+            const nums = [1,2,3,4,5];
+            const result = nums.reduce((sum, curValue) => {
+                return sum + curValue;
+            }, 0)
+
+        })
+    },[])
 
 
     const handleSigninClick = () => {
@@ -59,6 +77,14 @@ function SideBar(props) {
             <div>
                 <ul>
                     <Link to={"/board/write"}><li>글쓰기</li></Link>
+                    <Link to={"/board/all/1"}><li>전체 게시글 ({categories.map(category => category.boardCount).reduce((sum, curValue) => sum + curValue, 0)})</li></Link>
+                    {categories.map(category => {
+                        return <Link key={category.boardCategoryId} to={`/board/${category.boardCategoryName}/1`}>
+                            <li>
+                                {category.boardCategoryName} ({category.boardCount})
+                            </li>
+                        </Link>
+                    })}
                 </ul>
             </div>
             
