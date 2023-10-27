@@ -74,6 +74,22 @@ function BoardDetails(props) {
         }
     })
 
+    const getLikeCount = useQuery(["getLikeCount"], async () => {
+        try {
+            const option = {
+                headers: {
+                    Authorization: localStorage.getItem("accessToken")
+                }
+            }
+            return await instance.get(`/board/like/${boardId}`, option);
+        } catch (error) {
+            console.log(error);
+        }
+    }, {
+        refetchOnWindowFocus: false,
+        retry: 0
+    })
+
     const getLikeState = useQuery(["getLikeState"], async () => {
         try {
             const option = {
