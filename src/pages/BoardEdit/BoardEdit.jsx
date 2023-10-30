@@ -172,6 +172,8 @@ function BoardEdit(props) {
             }
             console.log(boardContent);
             await instance.put(`/board/${boardId}`, boardContent, option);
+            alert("게시글 수정 완료.")
+            navigate(`/board/${boardId}`);
         } catch (error) {
             console.log(error);
         }
