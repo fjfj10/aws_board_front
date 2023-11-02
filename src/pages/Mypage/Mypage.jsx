@@ -136,6 +136,9 @@ function Mypage(props) {
         }
     }
 
+    
+    console.log(principal);
+
     return (
         <RootContainer>
             <div>
